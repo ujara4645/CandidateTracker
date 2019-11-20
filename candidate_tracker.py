@@ -4,10 +4,11 @@ try:
 except ImportError:
 	import simplejson as json
 
-# Import the tweepy and pandas libraries
+# Import the neccessary libraries
 import tweepy
 import pandas as pd
 import matplotlib.pyplot as plt
+import numpy as np
 
 
 # Variables that contains the user credentials to access Twitter API 
@@ -62,7 +63,7 @@ def main():
     # Create the api to connect to twitter with your credentials
     api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True, compression=True)
 
-    count = 2000
+    count = 3000
 
     # Create stat summary for each account
     CNN_stats = generate_stats('CNN', 'CNN_tweets.csv', api, count)
@@ -78,38 +79,14 @@ def main():
     dict_stats = {'Account':accounts, 'Trump':trump_count, 'Biden':biden_count, 'Sanders':sanders_count}
     df = pd.DataFrame(dict_stats)
 
-    # Create stacked bar chart of relative metion percentages
-    f, ax = plt.subplots(1, figsize=(10,5))
-    bar_width = .5
-    bar_l = [i for i in range(len(df['Trump']))] 
-    tick_pos = [i+(bar_width/8) for i in bar_l] 
-    totals = [i+j+k for i,j,k in zip(df['Trump'], df['Biden'], df['Sanders'])]
-    
-    pre_rel = [i / j * 100 for  i,j in zip(df['Trump'], totals)]
-    mid_rel = [i / j * 100 for  i,j in zip(df['Biden'], totals)]
-    post_rel = [i / j * 100 for  i,j in zip(df['Sanders'], totals)]
-    
-    ax.bar(bar_l, pre_rel, label='Trump', alpha=0.9,
-        color='#E0BBE4',width=bar_width, edgecolor='white')
-
-    ax.bar(bar_l, mid_rel, bottom=pre_rel, label='Biden', 
-           alpha=0.9, color='#957DAD', width=bar_width,edgecolor='white')
-
-    ax.bar(bar_l, post_rel, bottom=[i+j for i,j in zip(pre_rel, mid_rel)], 
-            label='Sanders', alpha=0.9, color='#FFDFD3', width=bar_width,edgecolor='white')
-
-    # Label axes and plots
-    plt.xticks(tick_pos, df['Account'])
-    ax.set_ylabel("Percent Account Tweets About Person Relative to Others")
-    ax.set_xlabel("")
-    plt.legend(loc='upper left', bbox_to_anchor=(1,1), ncol=1)
-
-    plt.title("Tweet Distribution between Trump, Biden, and Sanders over " + str(count) + " tweets")
-    plt.xlim([min(tick_pos)-bar_width, max(tick_pos)+bar_width])
-    plt.ylim(-10, 110)
-    plt.setp(plt.gca().get_xticklabels(), rotation=45, horizontalalignment='right')
+    # Create and label plot
+    colors = ["#E0BBE4", "#957DAD","#FFDFD3"]
+    df[['Trump', 'Biden', 'Sanders']].plot(kind = 'bar', stacked = True, color = colors, figsize = (10,7))
+    plt.xticks(range(len(accounts)), accounts, size='small', rotation = 'horizontal')
+    plt.title("Number of times a candidate was mentioned over " + str(count) + " tweets")
+    plt.xlabel('News Account Source')
+    plt.ylabel('Number of Tweets')
     plt.show()
-
 
 if __name__ == "__main__":
     main()

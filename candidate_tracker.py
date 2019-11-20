@@ -11,10 +11,10 @@ import matplotlib.pyplot as plt
 
 
 # Variables that contains the user credentials to access Twitter API 
-ACCESS_TOKEN = '2886354621-jXXNhdtDb3AfO4kxXjaqctmE4KtpKBCEo5XtLyD'
-ACCESS_SECRET = 'Bly5AL5YpSXsKY2E7sI05M4VSJLE08iyuShAOHYAg9h4o'
-CONSUMER_KEY = '2eFYDi4z2U2JCk2Nfq5P76RID'
-CONSUMER_SECRET = 'iWUwyLwUiHEUHr87APqjGXdYqp5EJmRiUHrNRJXvRaMUZX6bfA'
+ACCESS_TOKEN = ''
+ACCESS_SECRET = ''
+CONSUMER_KEY = ''
+CONSUMER_SECRET = ''
 
 
 def generate_stats(screen_name, file_name, api, count):
